@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>号码管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+        }
+        
+        /* 登录页面样式 */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
+            margin: 0 auto;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .login-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        
+        .password-container input {
+            width: 100%;
+            padding: 16px 20px;
+            padding-left: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            color: white;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .password-container input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+        
+        .password-container i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #5a5fd3, #9a9efd);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+            height: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .login-footer {
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        /* 网格页面样式 */
+        .dashboard-container {
+            display: none;
+            width: 100%;
+            padding: 30px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-info {
+            color: white;
+        }
+        
+        .user-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .account-details {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .balance-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 12px;
+            min-width: 200px;
+        }
+        
+        .balance-info h3 {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .balance-info p {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #4cd964;
+        }
+        
+        .logout-btn {
+            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+        
+        .grid-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .grid-item:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #8f94fb;
+            text-align: center;
+        }
+        
+        .item-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .item-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .item-footer {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .item-btn {
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .item-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 详情页面样式 */
+        .detail-container {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            margin: 0 auto;
+        }
+        
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-btn {
+            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .detail-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+        
+        .detail-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .detail-icon {
+            font-size: 3rem;
+            margin-right: 20px;
+            color: #8f94fb;
+        }
+        
+        .detail-info h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .detail-info p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .purchase-form, .sms-container, .history-container {
+            margin: 30px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group select:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+        
+        .price-display {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .price-display h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .price-display .price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #4cd964;
+        }
+        
+        .purchase-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+        
+        .purchase-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #5a5fd3, #9a9efd);
+        }
+        
+        .purchase-btn:disabled {
+            background: #7a7a7a;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(76, 217, 100, 0.2);
+            border: 1px solid #4cd964;
+            color: #4cd964;
+        }
+        
+        .error {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+        
+        .sms-card, .history-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .sms-card:hover, .history-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        .sms-header, .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .sms-content, .history-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            color: #4cd964;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            opacity: 0.7;
+            font-style: italic;
+        }
+        
+        .refund-btn {
+            padding: 8px 16px;
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            border-radius: 50px;
+            color: #ff6b6b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .refund-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+        }
+        
+        .timer-display {
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .refund-countdown {
+            color: #ffcc00;
+        }
+        
+        .refund-expired {
+            color: #ff6b6b;
+        }
+        
+        .refund-success {
+            color: #4cd964;
+        }
+        
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .sms-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .add-code-btn {
+            background: rgba(76, 217, 100, 0.2);
+            color: #4cd964;
+            border: 1px solid #4cd964;
+        }
+        
+        .add-code-btn:hover {
+            background: rgba(76, 217, 100, 0.3);
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .delayed-animation {
+            animation-delay: 0.3s;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .account-details {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 2rem;
+            }
+            
+            .grid-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .account-details {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .detail-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .detail-title {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .detail-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .sms-content, .history-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .sms-actions {
+                flex-direction: column;
+            }
+            
+            .timer-display {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 25px 15px;
+            }
+            
+            .login-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-container {
+                padding: 15px;
+            }
+            
+            .detail-content {
+                padding: 20px;
+            }
+            
+            .code-display {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 登录页面 -->
+        <div class="login-container" id="loginPage">
+            <div class="login-header animate-in">
+                <h1>号码管理系统</h1>
+                <p>请输入您的密码访问账户</p>
+            </div>
+            
+            <div class="password-container animate-in delayed-animation">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="输入密码..." autocomplete="off">
+            </div>
+            
+            <button class="login-btn animate-in delayed-animation" id="loginBtn">登 入 系 统</button>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="login-footer animate-in">
+                <p>安全访问系统 &copy; 2023</p>
+            </div>
+        </div>
+        
+        <!-- 网格展示页面 -->
+        <div class="dashboard-container" id="dashboardPage">
+            <div class="dashboard-header">
+                <div class="user-info">
+                    <h1>欢迎回来</h1>
+                    <div class="account-details">
+                        <div class="balance-info">
+                            <h3>账户余额</h3>
+                            <p id="balanceDisplay">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">退出登录</button>
+            </div>
+            
+            <div class="grid-container" id="gridContainer">
+                <div class="grid-item" data-id="purchase">
+                    <div class="item-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h3 class="item-title">号码购买</h3>
+                    <p class="item-content">购买不同国家的虚拟号码，用于注册各种在线服务</p>
+                    <div class="item-footer">
+                        <button class="item-btn">进入购买</button>
+                    </div>
+                </div>
+                
+                <div class="grid-item" data-id="sms">
+                    <div class="item-icon">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <h3 class="item-title">短信服务</h3>
+                    <p class="item-content">查看已购买号码接收的短信和验证码</p>
+                    <div class="item-footer">
+                        <button class="item-btn">查看短信</button>
+                    </div>
+                </div>
+                
+                <div class="grid-item" data-id="history">
+                    <div class="item-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="item-title">历史记录</h3>
+                    <p class="item-content">查看您的购买记录和短信历史</p>
+                    <div class="item-footer">
+                        <button class="item-btn">查看记录</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 详情页面 -->
+        <div class="detail-container" id="detailPage">
+            <div class="detail-header">
+                <div class="user-info">
+                    <h1 id="detailPageTitle">详情页面</h1>
+                </div>
+                <button class="back-btn" id="backBtn">返回</button>
+            </div>
+            
+            <div class="detail-content">
+                <div class="detail-title">
+                    <div class="detail-icon" id="detailIcon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="detail-info">
+                        <h1 id="serviceTitle">详情页面</h1>
+                        <p id="serviceDescription">选择服务查看详情</p>
+                    </div>
+                </div>
+                
+                <!-- 号码购买内容 -->
+                <div class="purchase-form" id="purchaseForm">
+                    <div class="form-group">
+                        <label for="countrySelect"><i class="fas fa-globe"></i> 选择国家</label>
+                        <select id="countrySelect">
+                            <option value="">-- 请选择国家 --</option>
+                            <option value="us">美国</option>
+                            <option value="uk">英国</option>
+                            <option value="ca">加拿大</option>
+                            <option value="au">澳大利亚</option>
+                            <option value="de">德国</option>
+                            <option value="jp">日本</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serviceSelect"><i class="fas fa-concierge-bell"></i> 选择服务</label>
+                        <select id="serviceSelect">
+                            <option value="">-- 请选择服务 --</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="whatsapp">WhatsApp</option>
+                            <option value="telegram">Telegram</option>
+                            <option value="gmail">Gmail</option>
+                            <option value="amazon">Amazon</option>
+                            <option value="facebook">Facebook</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="numberSelect"><i class="fas fa-mobile-alt"></i> 选择号码</label>
+                        <select id="numberSelect">
+                            <option value="">-- 请选择号码 --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="price-display">
+                        <h3>购买价格</h3>
+                        <div class="price" id="priceDisplay">$0.00</div>
+                    </div>
+                    
+                    <button class="purchase-btn" id="purchaseBtn" disabled>立即购买</button>
+                    
+                    <div class="message success" id="successMessage">
+                        购买成功！号码已添加到您的账户
+                    </div>
+                    
+                    <div class="message error" id="errorMessageDetail">
+                        余额不足，请充值后再购买
+                    </div>
+                </div>
+                
+                <!-- 短信服务内容 -->
+                <div class="sms-container" id="smsContainer" style="display: none;">
+                    <div class="sms-list" id="smsList">
+                        <!-- 短信将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 历史记录内容 -->
+                <div class="history-container" id="historyContainer" style="display: none;">
+                    <h2 style="margin-bottom: 20px; text-align: center;">购买记录</h2>
+                    <div class="history-list" id="purchaseHistoryList">
+                        <!-- 购买历史将通过JavaScript动态生成 -->
+                    </div>
+                    
+                    <h2 style="margin: 30px 0 20px; text-align: center;">短信记录</h2>
+                    <div class="history-list" id="smsHistoryList">
+                        <!-- 短信历史将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面元素
+        const loginPage = document.getElementById('loginPage');
+        const dashboardPage = document.getElementById('dashboardPage');
+        const detailPage = document.getElementById('detailPage');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const backBtn = document.getElementById('backBtn');
+        const balanceDisplay = document.getElementById('balanceDisplay');
+        const detailPageTitle = document.getElementById('detailPageTitle');
+        const serviceTitle = document.getElementById('serviceTitle');
+        const serviceDescription = document.getElementById('serviceDescription');
+        const detailIcon = document.getElementById('detailIcon');
+        const countrySelect = document.getElementById('countrySelect');
+        const serviceSelect = document.getElementById('serviceSelect');
+        const numberSelect = document.getElementById('numberSelect');
+        const priceDisplay = document.getElementById('priceDisplay');
+        const purchaseBtn = document.getElementById('purchaseBtn');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessageDetail = document.getElementById('errorMessageDetail');
+        const purchaseForm = document.getElementById('purchaseForm');
+        const smsContainer = document.getElementById('smsContainer');
+        const smsList = document.getElementById('smsList');
+        const historyContainer = document.getElementById('historyContainer');
+        const purchaseHistoryList = document.getElementById('purchaseHistoryList');
+        const smsHistoryList = document.getElementById('smsHistoryList');
+        
+        // 模拟用户数据
+        const validPassword = "securePass123";
+        let accountBalance = 100.00; // 初始余额
+        
+        // 号码数据
+        const numbersData = {
+            tiktok: [
+                { id: "t1", number: "+1 213-555-0199", price: 3.99, country: "us" },
+                { id: "t2", number: "+1 347-555-0134", price: 4.99, country: "us" },
+                { id: "t3", number: "+44 7700 900123", price: 4.49, country: "uk" },
+                { id: "t4", number: "+44 7700 900567", price: 4.99, country: "uk" },
+                { id: "t5", number: "+1 416-555-0199", price: 3.79, country: "ca" },
+                { id: "t6", number: "+61 412 345 678", price: 5.49, country: "au" }
+            ],
+            whatsapp: [
+                { id: "w1", number: "+1 212-555-0199", price: 2.99, country: "us" },
+                { id: "w2", number: "+1 718-555-0134", price: 3.49, country: "us" },
+                { id: "w3", number: "+44 7700 900456", price: 3.99, country: "uk" },
+                { id: "w4", number: "+49 151 12345678", price: 4.29, country: "de" },
+                { id: "w5", number: "+81 90-1234-5678", price: 4.99, country: "jp" }
+            ],
+            telegram: [
+                { id: "tg1", number: "+1 646-555-0199", price: 2.49, country: "us" },
+                { id: "tg2", number: "+1 415-555-0134", price: 2.99, country: "us" },
+                { id: "tg3", number: "+44 7700 900789", price: 3.49, country: "uk" },
+                { id: "tg4", number: "+61 412 345 679", price: 3.99, country: "au" }
+            ],
+            gmail: [
+                { id: "g1", number: "+1 310-555-0199", price: 1.99, country: "us" },
+                { id: "g2", number: "+1 305-555-0134", price: 1.99, country: "us" },
+                { id: "g3", number: "+44 7700 900101", price: 2.49, country: "uk" },
+                { id: "g4", number: "+1 647-555-0199", price: 1.79, country: "ca" }
+            ],
+            amazon: [
+                { id: "a1", number: "+1 206-555-0199", price: 3.49, country: "us" },
+                { id: "a2", number: "+1 206-555-0134", price: 3.49, country: "us" },
+                { id: "a3", number: "+44 7700 900202", price: 3.99, country: "uk" },
+                { id: "a4", number: "+49 151 12345679", price: 4.29, country: "de" }
+            ],
+            facebook: [
+                { id: "f1", number: "+1 650-555-0199", price: 2.99, country: "us" },
+                { id: "f2", number: "+1 650-555-0134", price: 2.99, country: "us" },
+                { id: "f3", number: "+44 7700 900303", price: 3.49, country: "uk" },
+                { id: "f4", number: "+61 412 345 680", price: 3.99, country: "au" }
+            ]
+        };
+        
+        // 当前选择的号码
+        let selectedNumber = null;
+        
+        // 购买记录
+        let purchaseHistory = [];
+        
+        // 短信记录
+        let smsHistory = [];
+        
+        // 20分钟退款倒计时计时器
+        let refundTimers = {};
+        
+        // 初始化页面
+        function initPage() {
+            // 检查登录状态
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            const storedBalance = sessionStorage.getItem('balance');
+            const storedPurchases = sessionStorage.getItem('purchaseHistory');
+            const storedSms = sessionStorage.getItem('smsHistory');
+            
+            if (storedBalance) {
+                accountBalance = parseFloat(storedBalance);
+            } else {
+                accountBalance = 100.00;
+            }
+            
+            if (storedPurchases) {
+                purchaseHistory = JSON.parse(storedPurchases);
+            }
+            
+            if (storedSms) {
+                smsHistory = JSON.parse(storedSms);
+            }
+            
+            if (isLoggedIn) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+            
+            // 添加事件监听器
+            loginBtn.addEventListener('click', handleLogin);
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+            logoutBtn.addEventListener('click', handleLogout);
+            backBtn.addEventListener('click', showDashboard);
+            
+            // 网格点击事件
+            document.querySelectorAll('.grid-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const id = item.getAttribute('data-id');
+                    showDetail(id);
+                });
+            });
+            
+            // 下拉框事件
+            countrySelect.addEventListener('change', updateNumberOptions);
+            serviceSelect.addEventListener('change', updateNumberOptions);
+            numberSelect.addEventListener('change', updatePriceDisplay);
+            purchaseBtn.addEventListener('click', handlePurchase);
+        }
+        
+        // 处理登录
+        function handleLogin() {
+            const password = passwordInput.value.trim();
+            
+            // 清除错误消息
+            errorMessage.textContent = '';
+            
+            // 验证密码
+            if (!password) {
+                showError("请输入密码");
+                return;
+            }
+            
+            // 简单加密比较
+            const encryptedInput = btoa(password);
+            const encryptedValid = btoa(validPassword);
+            
+            if (encryptedInput === encryptedValid) {
+                // 登录成功
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('balance', accountBalance.toString());
+                showDashboard();
+            } else {
+                showError("密码不正确，请重试");
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        // 显示错误消息
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.opacity = 1;
+            
+            // 添加动画效果
+            errorMessage.style.transform = 'translateY(5px)';
+            setTimeout(() => {
+                errorMessage.style.transform = 'translateY(0)';
+            }, 300);
+        }
+        
+        // 显示登录页面
+        function showLogin() {
+            loginPage.style.display = 'flex';
+            dashboardPage.style.display = 'none';
+            detailPage.style.display = 'none';
+            passwordInput.value = '';
+            errorMessage.textContent = '';
+        }
+        
+        // 显示仪表盘页面
+        function showDashboard() {
+            loginPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
+            detailPage.style.display = 'none';
+            
+            // 显示格式化余额
+            balanceDisplay.textContent = formatCurrency(accountBalance);
+        }
+        
+        // 显示详情页面
+        function showDetail(itemId) {
+            loginPage.style.display = 'none';
+            dashboardPage.style.display = 'none';
+            detailPage.style.display = 'block';
+            
+            // 重置表单
+            countrySelect.value = '';
+            serviceSelect.value = '';
+            numberSelect.innerHTML = '<option value="">-- 请选择号码 --</option>';
+            priceDisplay.textContent = '$0.00';
+            purchaseBtn.disabled = true;
+            successMessage.style.display = 'none';
+            errorMessageDetail.style.display = 'none';
+            selectedNumber = null;
+            
+            // 隐藏所有详情区域
+            purchaseForm.style.display = 'none';
+            smsContainer.style.display = 'none';
+            historyContainer.style.display = 'none';
+            
+            // 根据类型显示不同内容
+            if (itemId === 'purchase') {
+                detailPageTitle.textContent = '号码购买';
+                serviceTitle.textContent = '虚拟号码购买';
+                serviceDescription.textContent = '选择国家、服务和号码进行购买';
+                detailIcon.innerHTML = '<i class="fas fa-shopping-cart"></i>';
+                purchaseForm.style.display = 'block';
+            } 
+            else if (itemId === 'sms') {
+                detailPageTitle.textContent = '短信服务';
+                serviceTitle.textContent = '短信与验证码';
+                serviceDescription.textContent = '查看已购买号码接收的短信';
+                detailIcon.innerHTML = '<i class="fas fa-comment"></i>';
+                smsContainer.style.display = 'block';
+                generateSmsList();
+            } 
+            else if (itemId === 'history') {
+                detailPageTitle.textContent = '历史记录';
+                serviceTitle.textContent = '购买与短信历史';
+                serviceDescription.textContent = '查看您的购买记录和短信历史';
+                detailIcon.innerHTML = '<i class="fas fa-history"></i>';
+                historyContainer.style.display = 'block';
+                generateHistoryLists();
+            }
+        }
+        
+        // 格式化货币
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // 更新号码选项
+        function updateNumberOptions() {
+            const country = countrySelect.value;
+            const service = serviceSelect.value;
+            
+            // 清空号码下拉框
+            numberSelect.innerHTML = '<option value="">-- 请选择号码 --</option>';
+            priceDisplay.textContent = '$0.00';
+            purchaseBtn.disabled = true;
+            selectedNumber = null;
+            
+            if (!country || !service) return;
+            
+            // 过滤号码
+            const filteredNumbers = numbersData[service].filter(num => num.country === country);
+            
+            if (filteredNumbers.length > 0) {
+                filteredNumbers.forEach(num => {
+                    const option = document.createElement('option');
+                    option.value = num.id;
+                    option.textContent = `${num.number} (${formatCurrency(num.price)})`;
+                    option.dataset.price = num.price;
+                    numberSelect.appendChild(option);
+                });
+            } else {
+                const option = document.createElement('option');
+                option.textContent = '-- 该服务在此国家暂无号码 --';
+                numberSelect.appendChild(option);
+            }
+        }
+        
+        // 更新价格显示
+        function updatePriceDisplay() {
+            const selectedOption = numberSelect.options[numberSelect.selectedIndex];
+            
+            if (selectedOption.value) {
+                const price = parseFloat(selectedOption.dataset.price);
+                priceDisplay.textContent = formatCurrency(price);
+                purchaseBtn.disabled = false;
+                selectedNumber = {
+                    id: selectedOption.value,
+                    number: selectedOption.textContent.split(' (')[0],
+                    price: price
+                };
+            } else {
+                priceDisplay.textContent = '$0.00';
+                purchaseBtn.disabled = true;
+                selectedNumber = null;
+            }
+        }
+        
+        // 处理购买
+        function handlePurchase() {
+            if (!selectedNumber) return;
+            
+            successMessage.style.display = 'none';
+            errorMessageDetail.style.display = 'none';
+            
+            if (accountBalance >= selectedNumber.price) {
+                // 购买成功
+                accountBalance -= selectedNumber.price;
+                accountBalance = parseFloat(accountBalance.toFixed(2));
+                
+                // 获取国家名称
+                const countryNames = {
+                    us: '美国',
+                    uk: '英国',
+                    ca: '加拿大',
+                    au: '澳大利亚',
+                    de: '德国',
+                    jp: '日本'
+                };
+                
+                // 获取服务名称
+                const serviceNames = {
+                    tiktok: 'TikTok',
+                    whatsapp: 'WhatsApp',
+                    telegram: 'Telegram',
+                    gmail: 'Gmail',
+                    amazon: 'Amazon',
+                    facebook: 'Facebook'
+                };
+                
+                const country = countryNames[countrySelect.value];
+                const service = serviceNames[serviceSelect.value];
+                
+                // 创建购买记录
+                const purchaseRecord = {
+                    id: Date.now(),
+                    number: selectedNumber.number,
+                    country: country,
+                    service: service,
+                    price: selectedNumber.price,
+                    date: new Date().toLocaleString()
+                };
+                
+                // 创建短信记录（初始无验证码）
+                const smsRecord = {
+                    id: Date.now(),
+                    number: selectedNumber.number,
+                    country: country,
+                    service: service,
+                    code: null, // 最新验证码
+                    date: new Date().toLocaleString(),
+                    purchaseTime: new Date().getTime(), // 记录购买时间戳
+                    price: selectedNumber.price // 存储价格用于退款
+                };
+                
+                // 添加到历史记录
+                purchaseHistory.push(purchaseRecord);
+                smsHistory.push(smsRecord);
+                
+                // 更新sessionStorage
+                sessionStorage.setItem('balance', accountBalance.toString());
+                sessionStorage.setItem('purchaseHistory', JSON.stringify(purchaseHistory));
+                sessionStorage.setItem('smsHistory', JSON.stringify(smsHistory));
+                
+                // 更新余额显示
+                balanceDisplay.textContent = formatCurrency(accountBalance);
+                
+                // 显示成功消息
+                successMessage.style.display = 'block';
+                
+                // 重置表单
+                setTimeout(() => {
+                    countrySelect.value = '';
+                    serviceSelect.value = '';
+                    numberSelect.innerHTML = '<option value="">-- 请选择号码 --</option>';
+                    priceDisplay.textContent = '$0.00';
+                    purchaseBtn.disabled = true;
+                    selectedNumber = null;
+                    
+                    // 自动跳转到短信服务页面
+                    showDetail('sms');
+                }, 1000);
+            } else {
+                // 余额不足
+                errorMessageDetail.style.display = 'block';
+            }
+        }
+        
+        // 生成短信列表
+        function generateSmsList() {
+            smsList.innerHTML = '';
+            
+            // 清除之前的计时器
+            clearAllRefundTimers();
+            
+            if (smsHistory.length === 0) {
+                smsList.innerHTML = '<div class="no-data">暂无短信记录</div>';
+                return;
+            }
+            
+            const now = new Date().getTime();
+            const twentyMinutes = 20 * 60 * 1000; // 20分钟毫秒数
+            
+            // 过滤掉已超时的记录
+            smsHistory = smsHistory.filter(sms => {
+                // 计算剩余时间
+                const elapsed = now - sms.purchaseTime;
+                const remaining = twentyMinutes - elapsed;
+                
+                // 如果超时，自动退款
+                if (remaining <= 0) {
+                    // 自动退款
+                    accountBalance += parseFloat(sms.price);
+                    sessionStorage.setItem('balance', accountBalance.toString());
+                    return false; // 删除该记录
+                }
+                
+                return true; // 保留该记录
+            });
+            
+            // 更新sessionStorage
+            sessionStorage.setItem('smsHistory', JSON.stringify(smsHistory));
+            
+            if (smsHistory.length === 0) {
+                smsList.innerHTML = '<div class="no-data">暂无短信记录</div>';
+                return;
+            }
+            
+            smsHistory.forEach((sms, index) => {
+                const smsCard = document.createElement('div');
+                smsCard.className = 'sms-card';
+                smsCard.dataset.id = sms.id;
+                
+                // 计算剩余时间
+                const now = new Date().getTime();
+                const elapsed = now - sms.purchaseTime;
+                const twentyMinutes = 20 * 60 * 1000; // 20分钟毫秒数
+                const remaining = twentyMinutes - elapsed;
+                
+                // 格式化剩余时间
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                
+                // 验证码显示
+                let codeHtml = '<div class="code-display">等待接收...</div>';
+                if (sms.code) {
+                    codeHtml = `<div class="code-display">${sms.code}</div>`;
+                }
+                
+                // 退款按钮（仅在未收到验证码时显示）
+                let refundButton = '';
+                if (!sms.code) {
+                    refundButton = `<button class="refund-btn" data-id="${sms.id}">退还号码</button>`;
+                }
+                
+                smsCard.innerHTML = `
+                    <div class="timer-display refund-countdown">剩余时间: ${minutes}分${seconds}秒</div>
+                    <div class="sms-header">
+                        <span>${sms.service}</span>
+                        <span>${sms.date}</span>
+                    </div>
+                    <div class="sms-content">
+                        <div>
+                            <div><strong>号码:</strong> ${sms.number}</div>
+                            <div><strong>国家:</strong> ${sms.country}</div>
+                        </div>
+                        ${codeHtml}
+                    </div>
+                    <div class="sms-actions">
+                        <button class="action-btn add-code-btn" data-id="${sms.id}">模拟接收验证码</button>
+                        ${refundButton}
+                    </div>
+                `;
+                
+                smsList.appendChild(smsCard);
+                
+                // 为按钮添加事件
+                const addCodeBtn = smsCard.querySelector('.add-code-btn');
+                addCodeBtn.addEventListener('click', () => addVerificationCode(sms.id));
+                
+                if (!sms.code) {
+                    const refundBtn = smsCard.querySelector('.refund-btn');
+                    refundBtn.addEventListener('click', handleRefund);
+                }
+                
+                // 设置20分钟倒计时计时器
+                setupRefundTimer(smsCard, sms.id, remaining);
+            });
+            
+            // 更新余额显示（可能因自动退款变化）
+            balanceDisplay.textContent = formatCurrency(accountBalance);
+        }
+        
+        // 添加验证码
+        function addVerificationCode(id) {
+            const smsIndex = smsHistory.findIndex(sms => sms.id === id);
+            if (smsIndex !== -1) {
+                // 生成6位随机验证码
+                const code = Math.floor(100000 + Math.random() * 900000);
+                smsHistory[smsIndex].code = code;
+                
+                // 更新sessionStorage
+                sessionStorage.setItem('smsHistory', JSON.stringify(smsHistory));
+                
+                // 重新生成短信列表
+                generateSmsList();
+            }
+        }
+        
+        // 设置退款倒计时
+        function setupRefundTimer(card, id, remaining) {
+            // 清除现有计时器（如果存在）
+            if (refundTimers[id]) {
+                clearInterval(refundTimers[id]);
+            }
+            
+            // 设置新的计时器
+            refundTimers[id] = setInterval(() => {
+                const now = new Date().getTime();
+                const smsIndex = smsHistory.findIndex(sms => sms.id === id);
+                
+                // 如果记录不存在，清除计时器
+                if (smsIndex === -1) {
+                    clearInterval(refundTimers[id]);
+                    return;
+                }
+                
+                // 计算剩余时间
+                const elapsed = now - smsHistory[smsIndex].purchaseTime;
+                const twentyMinutes = 20 * 60 * 1000; // 20分钟毫秒数
+                const remaining = twentyMinutes - elapsed;
+                
+                if (remaining <= 0) {
+                    // 自动退款
+                    handleRefund({ target: { dataset: { id: id } } });
+                    clearInterval(refundTimers[id]);
+                    return;
+                }
+                
+                // 更新倒计时显示
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                
+                const timerDisplay = card.querySelector('.timer-display');
+                if (timerDisplay) {
+                    timerDisplay.textContent = `剩余时间: ${minutes}分${seconds}秒`;
+                }
+            }, 1000);
+        }
+        
+        // 清除所有退款计时器
+        function clearAllRefundTimers() {
+            for (const id in refundTimers) {
+                clearInterval(refundTimers[id]);
+            }
+            refundTimers = {};
+        }
+        
+        // 处理退款
+        function handleRefund(e) {
+            const id = parseInt(e.target.dataset.id);
+            const smsIndex = smsHistory.findIndex(sms => sms.id === id);
+            
+            if (smsIndex !== -1) {
+                // 退款金额
+                accountBalance += parseFloat(smsHistory[smsIndex].price);
+                
+                // 更新余额显示
+                balanceDisplay.textContent = formatCurrency(accountBalance);
+                
+                // 从记录中删除
+                smsHistory.splice(smsIndex, 1);
+                
+                // 清除计时器
+                if (refundTimers[id]) {
+                    clearInterval(refundTimers[id]);
+                    delete refundTimers[id];
+                }
+                
+                // 更新sessionStorage
+                sessionStorage.setItem('balance', accountBalance.toString());
+                sessionStorage.setItem('smsHistory', JSON.stringify(smsHistory));
+                
+                // 重新生成短信列表
+                generateSmsList();
+            }
+        }
+        
+        // 生成历史记录列表
+        function generateHistoryLists() {
+            purchaseHistoryList.innerHTML = '';
+            smsHistoryList.innerHTML = '';
+            
+            // 过滤出有验证码的短信记录
+            const receivedSmsHistory = smsHistory.filter(sms => sms.code !== null);
+            
+            // 过滤出有验证码的购买记录（通过号码匹配）
+            const receivedPurchaseHistory = purchaseHistory.filter(purchase => {
+                return receivedSmsHistory.some(sms => sms.number === purchase.number);
+            });
+            
+            // 去重，每个号码只保留最新的短信记录
+            const latestSmsHistory = [];
+            const uniqueNumbers = new Set();
+            
+            // 按时间倒序排序
+            receivedSmsHistory.sort((a, b) => b.purchaseTime - a.purchaseTime);
+            
+            receivedSmsHistory.forEach(sms => {
+                if (!uniqueNumbers.has(sms.number)) {
+                    uniqueNumbers.add(sms.number);
+                    latestSmsHistory.push(sms);
+                }
+            });
+            
+            if (receivedPurchaseHistory.length === 0) {
+                purchaseHistoryList.innerHTML = '<div class="no-data">暂无购买记录</div>';
+            } else {
+                receivedPurchaseHistory.forEach(record => {
+                    const historyCard = document.createElement('div');
+                    historyCard.className = 'history-card';
+                    
+                    historyCard.innerHTML = `
+                        <div class="history-header">
+                            <span>${record.service}</span>
+                            <span>${record.date}</span>
+                        </div>
+                        <div class="history-content">
+                            <div>
+                                <div><strong>号码:</strong> ${record.number}</div>
+                                <div><strong>国家:</strong> ${record.country}</div>
+                            </div>
+                            <div><strong>价格:</strong> ${formatCurrency(record.price)}</div>
+                        </div>
+                    `;
+                    
+                    purchaseHistoryList.appendChild(historyCard);
+                });
+            }
+            
+            if (latestSmsHistory.length === 0) {
+                smsHistoryList.innerHTML = '<div class="no-data">暂无短信记录</div>';
+            } else {
+                latestSmsHistory.forEach(record => {
+                    const historyCard = document.createElement('div');
+                    historyCard.className = 'history-card';
+                    
+                    historyCard.innerHTML = `
+                        <div class="history-header">
+                            <span>${record.service}</span>
+                            <span>${record.date}</span>
+                        </div>
+                        <div class="history-content">
+                            <div>
+                                <div><strong>号码:</strong> ${record.number}</div>
+                                <div><strong>国家:</strong> ${record.country}</div>
+                            </div>
+                            <div><strong>验证码:</strong> ${record.code}</div>
+                        </div>
+                    `;
+                    
+                    smsHistoryList.appendChild(historyCard);
+                });
+            }
+        }
+        
+        // 处理退出登录
+        function handleLogout() {
+            // 清除所有计时器
+            clearAllRefundTimers();
+            
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('balance');
+            sessionStorage.removeItem('purchaseHistory');
+            sessionStorage.removeItem('smsHistory');
+            showLogin();
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
